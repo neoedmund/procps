@@ -1,3 +1,35 @@
+How to hack top util, short demo:
+misson: hide lines that 0 cpu usage.
+
+1. search "linux top source" in search engine.
+found http://procps.sourceforge.net/procps-3.2.8.tar.gz
+
+2. tar xzf procps-3.2.8.tar.gz
+make got error, fix it
+```
+top.h:248:4: error: redeclaration of enumerator ‘P_PID’
+    P_PID, P_PPD, P_URR, P_UID, P_URE, P_GRP, P_TTY,
+    ^~~~~
+In file included from /usr/include/stdlib.h:39:0,
+                 from top.c:34:
+/usr/include/x86_64-linux-gnu/bits/waitflags.h:55:3: note: previous definition of ‘P_PID’ was here
+   P_PID,  /* Wait for specified process.  */
+```
+by replace P_PID with P_PID2 (include 1 in MACRO)
+
+3 make got link error, fix it by use:
+gcc top.c proc/libproc-3.2.8.so -lncurses -o top
+cp proc/libproc-3.2.8.so /usr/lib/
+
+4. modify line 3229: add "&& (ppt[i]->pcpu > 0)"
+recompile and done:
+sudo cp top /usr/local/bin/
+
+
+
+
+-------------------------original text below--------------------------
+
 COMPATIBILITY
 
     This code is intended for use with Linux 2.2.xx, 2.4.xx,
